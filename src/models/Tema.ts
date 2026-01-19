@@ -3,6 +3,6 @@ import type Postagem from "./Postagem";
 
 export default interface Usuario {
     id: number;
-    descicao: string;
+    descricao: string;
     postagem?: Postagem[] | null;
 }   
