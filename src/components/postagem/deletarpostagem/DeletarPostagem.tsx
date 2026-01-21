@@ -1,26 +1,25 @@
 import { useState, useContext, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { AuthContext } from "../../../contexts/AuthContext"
-import type Tema from "../../../models/Tema"
+import type Postagem from "../../../models/Postagem"
 import { buscar, deletar } from "../../../services/Service"
-import { ClipLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners"
 
-function DeletarTema() {
+function DeletarPostagem() {
 
-    const navigate = useNavigate() //é um hook(useNavigate) do React Router que cria uma função para mudar de página via código. Ele permite redirecionar o usuário para outra rota sem recarregar a aplicação.
-
-    const [tema, setTema] = useState<Tema>({} as Tema) // Deste ponto:
+    const navigate = useNavigate()
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    
+    const [postagem, setPostagem] = useState<Postagem>({} as Postagem)
+
+    const { id } = useParams<{ id: string }>()
+
     const { usuario, handleLogout } = useContext(AuthContext)
     const token = usuario.token
 
-    const { id } = useParams<{ id: string }>() // Até este ponto: Cria estados para armazenar um tema e controlar o loading. Obtém o usuário e token pelo Context e captura o id da rota usando useParams.
-
     async function buscarPorId(id: string) {
         try {
-            await buscar(`/temas/${id}`, setTema, {
+            await buscar(`/postagens/${id}`, setPostagem, {
                 headers: {
                     'Authorization': token
                 }
@@ -45,23 +44,23 @@ function DeletarTema() {
         }
     }, [id])
 
-    async function deletarTema() {
+    async function deletarPostagem() {
         setIsLoading(true)
 
         try {
-            await deletar(`/temas/${id}`, {
+            await deletar(`/postagens/${id}`, {
                 headers: {
                     'Authorization': token
                 }
             })
 
-            alert('Tema deletado com sucesso')
+            alert('Postagem apagada com sucesso')
 
         } catch (error: any) {
             if (error.toString().includes('401')) {
                 handleLogout()
             }else {
-                alert('Erro ao deletar o tema.')
+                alert('Erro ao deletar a postagem.')
             }
         }
 
@@ -70,20 +69,26 @@ function DeletarTema() {
     }
 
     function retornar() {
-        navigate("/temas")
+        navigate("/postagens")
     }
     
     return (
         <div className='container w-1/3 mx-auto'>
-            <h1 className='text-4xl text-center my-4'>Deletar tema</h1>
+            <h1 className='text-4xl text-center my-4'>Deletar Postagem</h1>
+
             <p className='text-center font-semibold mb-4'>
-                Você tem certeza de que deseja apagar o tema a seguir?</p>
+                Você tem certeza de que deseja apagar a postagem a seguir?
+            </p>
+
             <div className='border flex flex-col rounded-2xl overflow-hidden justify-between'>
                 <header 
                     className='py-2 px-6 bg-indigo-600 text-white font-bold text-2xl'>
-                    Tema
+                    Postagem
                 </header>
-                <p className='p-8 text-3xl bg-slate-200 h-full'>{tema.descricao}</p>
+                <div className="p-4">
+                    <p className='text-xl h-full'>{postagem.titulo}</p>
+                    <p>{postagem.texto}</p>
+                </div>
                 <div className="flex">
                     <button 
                         className='text-slate-100 bg-red-400 hover:bg-red-600 w-full py-2'
@@ -92,8 +97,8 @@ function DeletarTema() {
                     </button>
                     <button 
                         className='w-full text-slate-100 bg-indigo-400 
-                                   hover:bg-indigo-600 flex items-center justify-center'
-                                   onClick={deletarTema}>
+                        hover:bg-indigo-600 flex items-center justify-center'
+                        onClick={deletarPostagem}>
 
                         { isLoading ? 
                             <ClipLoader 
@@ -102,11 +107,12 @@ function DeletarTema() {
                             /> : 
                             <span>Sim</span>
                         }
-
+                        
                     </button>
                 </div>
             </div>
         </div>
     )
 }
-export default DeletarTema
+
+export default DeletarPostagem
