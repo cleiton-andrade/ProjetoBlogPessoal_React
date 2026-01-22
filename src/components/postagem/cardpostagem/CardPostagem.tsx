@@ -5,17 +5,21 @@ interface CardPostagensProps {
     postagem: Postagem
 }
 
+const foto_avatar =
+    "https://ik.imagekit.io/f9nzlij8o/Gemini_Generated_Image_9r0yyi9r0yyi9r0y.png";
+
 function CardPostagem({ postagem }: CardPostagensProps) {
     return (
         <div className='border-slate-900 border 
             flex flex-col rounded overflow-hidden justify-between'>
-                
+
             <div>
-                <div className="flex w-full bg-indigo-400 py-2 px-4 items-center gap-4">
+                <div className="flex items-center gap-4 px-6 py-4 bg-[#7c83fd]">
                     <img
-                        src={postagem.usuario?.foto}
-                        className='h-12 rounded-full'
-                        alt={postagem.usuario?.nome} />
+                        src={postagem.usuario?.foto || foto_avatar}
+                        className="h-12 w-12 rounded-full object-cover border border-gray-300"
+                        alt={`Foto de ${postagem.usuario?.nome}`}
+                    />
                     <h3 className='text-lg font-bold text-center uppercase'>
                         {postagem.usuario?.nome}
                     </h3>

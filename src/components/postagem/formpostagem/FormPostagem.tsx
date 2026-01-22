@@ -11,28 +11,30 @@ function FormPostagem() {
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [temas, setTemas] = useState<Tema[]>([])
+    const [temas, setTemas] = useState<Tema[]>([]) // Lista de temas para o select
 
-    const [tema, setTema] = useState<Tema>({ id: 0, descricao: '', })
-    const [postagem, setPostagem] = useState<Postagem>({} as Postagem)
+    const [tema, setTema] = useState<Tema>({ id: 0, descricao: '', }) // Tema selecionado
+    const [postagem, setPostagem] = useState<Postagem>({} as Postagem) // Postagem a ser criada ou editada
 
-    const { id } = useParams<{ id: string }>()
+    const { id } = useParams<{ id: string }>() // Pega o id da postagem pela URL
 
-    const { usuario, handleLogout } = useContext(AuthContext)
-    const token = usuario.token
+    const { usuario, handleLogout } = useContext(AuthContext) // Contexto de autenticação
+    const token = usuario.token // Pega o token do usuário logado
 
-    async function buscarPostagemPorId(id: string) {
-        try {
-            await buscar(`/postagens/${id}`, setPostagem, {
-                headers: { Authorization: token }
-            })
-        } catch (error: any) {
-            if (error.toString().includes('401')) {
-                handleLogout()
-            }
-        }
-    }
+    // Atualização de postagem - Função para buscar postagem por ID
+    async function buscarPostagemPorId(id: string) { // Cria uma função assíncrona chamada buscarPostagemPorId que recebe um parâmetro id do tipo string. Ela é assíncrona porque vai fazer uma chamada à API (requisição HTTP).
+        try { // Inicia um bloco de tratamento de erros. Tudo dentro do try será executado normalmente. Se ocorrer erro, vai para o catch.
+            await buscar(`/postagens/${id}`, setPostagem, { // Chama a função buscar (provavelmente um helper de requisição). await faz a função esperar a resposta da API antes de continuar. /postagens/${id} monta a URL dinâmica (ex: /postagens/5). setPostagem é a função que vai atualizar o estado com os dados recebidos.
+                headers: { Authorization: token } // Envia o token de autenticação no cabeçalho da requisição. Isso serve para provar que o usuário está logado/autorizado.
+            }) // Fecha o objeto de configurações e a chamada da função buscar.
+        } catch (error: any) { // Se acontecer algum erro na requisição, o código entra aqui. error: any indica que o erro pode ser de qualquer tipo.
+            if (error.toString().includes('401')) { // Converte o erro para texto e verifica se ele contém 401(mais comum) ou 404. O código 401 significa: Não autorizado (token inválido ou expirado). ou o 404 Not Found (recurso não encontrado).
+                handleLogout() // Executa a função que desloga o usuário, limpando sessão/token.
+            } // Fecha o if.
+        } // Fecha o catch.
+    } // Fecha a função.
 
+    // Atualização e Cadastro - Função para buscar tema por ID
     async function buscarTemaPorId(id: string) {
         try {
             await buscar(`/temas/${id}`, setTema, {
@@ -45,6 +47,7 @@ function FormPostagem() {
         }
     }
 
+    // Atualização e Cadastro da Postagem - Função para buscar todos os temas
     async function buscarTemas() {
         try {
             await buscar('/temas', setTemas, {
@@ -74,7 +77,7 @@ function FormPostagem() {
 
     useEffect(() => {
         setPostagem({
-            ...postagem,
+            ...postagem, // Está espalhando as propriedades atuais do objeto postagem para garantir que nenhuma informação seja perdida.
             tema: tema,
         })
     }, [tema])

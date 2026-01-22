@@ -5,6 +5,7 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import type Tema from "../../../models/Tema";
 import { buscar } from "../../../services/Service";
 import CardTema from "../cardtema/CardTema";
+import { ToastAlerta } from "../../../utils/ToastAlerta";
 
 function ListaTemas() {
 
@@ -19,7 +20,7 @@ function ListaTemas() {
 
     useEffect(() => { // Hook que executa efeito colateral (navegação) quando o token muda
         if (token === '') { // Se o token estiver vazio (usuário não autenticado)
-            alert('Você precisa estar logado!') // Mostra um alerta informando que o usuário precisa estar logado
+            ToastAlerta("Você precisa estar logado", 'erro') // Mostra um alerta informando que o usuário precisa estar logado
             navigate('/') // Redireciona o usuário para a página inicial (login)
         }
     }, [token]) // Executa o efeito sempre que o token mudar

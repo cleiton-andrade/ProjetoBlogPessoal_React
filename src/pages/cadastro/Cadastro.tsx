@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import type Usuario from "../../models/Usuario";
 import { cadastrarUsuario } from "../../services/Service";
+import { ToastAlerta } from "../../utils/ToastAlerta";
 
 function Cadastro() {
 
@@ -52,12 +53,12 @@ function Cadastro() {
 
       try{ 
         await cadastrarUsuario(`/usuarios/cadastrar`, usuario, setUsuario)
-        alert('Usuário cadastrado com sucesso!') // O try tenta executar o cadastro do usuário e exibe sucesso se funcionar.
+        ToastAlerta('Usuario cadastrado com sucesso!', 'sucesso') // O try tenta executar o cadastro do usuário e exibe sucesso se funcionar.
       }catch(error){ 
-        alert('Erro ao cadastrar o usuário!') // O catch captura erros e mostra uma mensagem caso a requisição falhe.
+        ToastAlerta("Os dados do Usuário estão inconsistentes!", "erro") // O catch captura erros e mostra uma mensagem caso a requisição falhe.
       }
     }else{ // Deste ponto -
-      alert('Dados do usuário inconsistentes! Verifique as informações do cadastro.')
+      ToastAlerta("Dados do usuário inconsistentes! Verifique as informações do cadastro.", 'erro')
       setUsuario({...usuario, senha: ''})
       setConfirmarSenha('')
     } // - até este ponto: Esse bloco é executado quando os dados estão inválidos e mostra um alerta de erro. Ele limpa a senha e a confirmação para o usuário digitar novamente.
